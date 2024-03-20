@@ -148,6 +148,8 @@ if uploaded_files:
     
     if dfs:
         df = pd.concat(dfs, ignore_index=True)
+        df = df.dropna()  # Add this line to remove rows with null values in any column
+
         # Define the month order
         
         month_order = ['Jan','January', 'Feb','February', 'Mar', 'March', 'Apr', 'April', 'May', 'Jun', 'June',
