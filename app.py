@@ -63,10 +63,10 @@ def preprocessdata(df):
     Returns:
     - The DataFrame with formatted data.
     """
-    if 'time full' in df.columns:
-        df['time full'] = pd.to_datetime(df['time full'])
-    df['Month'] = df['time full'].dt.month_name()
-    df['Month Order'] = df['time full'].dt.month
+    if 'time_full' in df.columns:
+        df['time_full'] = pd.to_datetime(df['time_full'])
+    df['Month'] = df['time_full'].dt.month_name()
+    df['Month Order'] = df['time_full'].dt.month
     
     return df
     
@@ -140,7 +140,12 @@ column_mapping = {
     'Truck Factor': 'truck_factor_tonnage',
     'Shovel': 'shovel',
     'Shovel Type': 'shovel', 
-    'Ton': 'VIMS_tonnage'
+    'Ton': 'VIMS_tonnage',
+    'time full': 'time_full',
+    'Time_Full': 'time_full',
+    'time_Full': 'time_full',
+    'Time Full': 'time_full',
+    'time Full': 'time_full',
 }
 
 
@@ -161,7 +166,7 @@ if uploaded_files:
     
     if dfs:
         df = pd.concat(dfs, ignore_index=True)
-        columns_of_interest = ['shovel', 'time full', 'VIMS_tonnage', 'truck_factor_tonnage']
+        columns_of_interest = ['shovel', 'time_full', 'VIMS_tonnage', 'truck_factor_tonnage']
         df = df.dropna(subset=columns_of_interest)  # Drop rows with null values only in the specified columns
         df = preprocessdata(df)
 
