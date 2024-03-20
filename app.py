@@ -183,7 +183,8 @@ if uploaded_files:
                         actual_productivity = np.mean(filtered_df['Truck fill'])
                         desired_productivity = mean_fill
                         productivity_difference = desired_productivity - actual_productivity
-                        
+                        if productivity_difference<0:
+                            productivity_difference=0
                         # Append summary data for the current month and shovel to the list
                         summary_data_all_months.append({
                             'Month': month,
@@ -191,7 +192,7 @@ if uploaded_files:
                             'Actual Material (Tonnes)': actual_material,
                             'Desired Material (Tonnes)': desired_material,
                             'Tonnage Increase': max(0, tonnage_increase),
-                            'Productivity Increase (%)': max(0, productivity_difference)
+                            'Productivity Increase (%)': productivity_difference
                         })
 
                 # Display summary table for all months for the current shovel
@@ -204,7 +205,7 @@ if uploaded_files:
                         'Actual Material (Tonnes)': summary_df_all_months['Actual Material (Tonnes)'].sum(),
                         'Desired Material (Tonnes)': summary_df_all_months['Desired Material (Tonnes)'].sum(),
                         'Tonnage Increase': summary_df_all_months['Tonnage Increase'].sum(),
-                        'Productivity Increase (%)': summary_df_all_months['Productivity Increase (%)'].sum()  # Assuming you want the average percentage increase
+                        'Productivity Increase (%)': summary_df_all_months['Productivity Increase (%)'].sum() 
                     }
                     
                     # Append the total row to the DataFrame
