@@ -187,22 +187,15 @@ if uploaded_files:
                         # Append summary data for the current month and shovel to the list
                         summary_data_all_months.append({
                             'Month': month,
-                            'Total Number of Trucks': f'{total_trucks:.0f}',
-                            'Actual Material (Tonnes)': f'{actual_material:.2e}',
-                            'Desired Material (Tonnes)': f'{desired_material:.2e}',
-                            'Tonnage Increase': f'{max(0, tonnage_increase):.2e}',
-                            'Productivity Increase (%)': f'{productivity_difference:.2f}%'
+                            'Total Number of Trucks': total_trucks,
+                            'Actual Material (Tonnes)': actual_material,
+                            'Desired Material (Tonnes)': desired_material,
+                            'Tonnage Increase': max(0, tonnage_increase),
+                            'Productivity Increase (%)': productivity_difference
                         })
 
                 # Display summary table for all months for the current shovel
                 if summary_data_all_months:
-                    # Convert numeric columns to appropriate types for summing
-                    summary_df_all_months['Total Number of Trucks'] = summary_df_all_months['Total Number of Trucks'].astype(float)
-                    summary_df_all_months['Actual Material (Tonnes)'] = summary_df_all_months['Actual Material (Tonnes)'].str.replace('e', 'E').astype(float)
-                    summary_df_all_months['Desired Material (Tonnes)'] = summary_df_all_months['Desired Material (Tonnes)'].str.replace('e', 'E').astype(float)
-                    summary_df_all_months['Tonnage Increase'] = summary_df_all_months['Tonnage Increase'].str.replace('e', 'E').astype(float)
-                    summary_df_all_months['Productivity Increase (%)'] = summary_df_all_months['Productivity Increase (%)'].str.rstrip('%').astype(float)
-                    
                     # Calculate the sum for each numeric column
                     total_row = {
                         'Month': 'Total',
