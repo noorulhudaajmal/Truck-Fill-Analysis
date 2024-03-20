@@ -183,7 +183,7 @@ if uploaded_files:
                         tonnage_increase = max(0, desired_material - actual_material)
                         actual_productivity = np.mean(filtered_df['Truck fill'])
                         desired_productivity = mean_fill
-                        productivity_difference = desired_productivity - actual_productivity
+                        productivity_difference = desired_productivity/(desired_productivity - actual_productivity)
                         if productivity_difference<0:
                             productivity_difference=0
                         # Append summary data for the current month and shovel to the list
