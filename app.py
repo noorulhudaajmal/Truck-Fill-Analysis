@@ -51,7 +51,24 @@ def extract_month_name(in_string):
         return match.group(1)
     else:
         return in_string
+   
+   
+def preprocessdata(df):
+    """
+    Preprocess the data.
     
+    Parameters:
+    - df: The DataFrame that needs to be processed.
+    
+    Returns:
+    - The DataFrame with formatted data.
+    """
+    if 'time full' in df.columns:
+        df['time full'] = pd.to_datetime(df['time full'])
+    df['Month'] = df['time full'].dt.month_name()
+    df['Month Order'] = df['time full'].dt.month
+    
+    return df
     
 def generate_plot(df, shovel_of_interest, target_std_dev=5, mean_fill=100):
     # Drop 'Truck fill' column if it exists
@@ -134,10 +151,6 @@ if uploaded_files:
     for uploaded_file in uploaded_files:
         df = pd.read_csv(uploaded_file)
         
-        # Extract month from filename and add it as a column
-        month = uploaded_file.name.split('.')[0]  # Assuming the filename format is "month.csv"
-        df['Month'] = extract_month_name(month)
-        
         # Standardize column names based on the predefined mapping
         df = standardize_column_names(df, column_mapping)
         
@@ -148,23 +161,15 @@ if uploaded_files:
     
     if dfs:
         df = pd.concat(dfs, ignore_index=True)
-        columns_of_interest = ['shovel', 'Month', 'VIMS_tonnage', 'truck_factor_tonnage']
+        columns_of_interest = ['shovel', 'time full', 'VIMS_tonnage', 'truck_factor_tonnage']
         df = df.dropna(subset=columns_of_interest)  # Drop rows with null values only in the specified columns
+        df = preprocessdata(df)
 
-        # Define the month order
-        
-        month_order = ['Jan','January', 'Feb','February', 'Mar', 'March', 'Apr', 'April', 'May', 'Jun', 'June',
-                       'Jul','July', 'Aug', 'August', 'Sep', 'September', 'Oct', 'October', 'Nov', 'November',
-                       'Dec', 'December']
-
-        # Create a temporary column with the month order
-        df['Month_Order'] = df['Month'].apply(lambda x: month_order.index(x))
-
-        # Sort the DataFrame by the temporary column
-        df= df.sort_values(by='Month_Order')
+        # Sorting w.r.t Months
+        df= df.sort_values(by='Month Order')
 
         # Drop the temporary column
-        df= df.drop(columns='Month_Order')    
+        df= df.drop(columns='Month Order')    
         mean_fill = st.sidebar.slider("Select Mean Fill Percentage:", 98, 110, 104)
         target_std_dev = st.sidebar.slider("Select Standard Deviation:", 1, 10, 5)
         
