@@ -28,31 +28,6 @@ def standardize_column_names(df, column_mapping):
 def calculate_truck_fill(vims_tonnage, truck_factor_tonnage):
     return (vims_tonnage / truck_factor_tonnage) * 100
 
-
-def extract_month_name(in_string):
-    """
-    This function uses a regular expression pattern that 
-    matches any of the month names followed by an optional 
-    space and a four-digit year.
-    
-    Parameters:
-    - in_string: A string containing a month name followed by 
-                 an optional space and a four-digit year.
-    
-    Returns:
-    The month name.
-    """
-    # Regular expression pattern to match month names followed by optional space and year
-    pattern = r'(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ ]?\d{4}'
-    
-    match = re.search(pattern, in_string)
-    if match:
-        # Extract the month name
-        return match.group(1)
-    else:
-        return in_string
-   
-   
 def preprocessdata(df):
     """
     Preprocess the data.
