@@ -148,7 +148,7 @@ if uploaded_files:
     
     if dfs:
         df = pd.concat(dfs, ignore_index=True)
-        columns_of_interest = ['shovel', 'Month', 'VIMS_tonnage', 'truck_factor_tonnage', 'Truck fill']
+        columns_of_interest = ['shovel', 'Month', 'VIMS_tonnage', 'truck_factor_tonnage']
         df = df.dropna(subset=columns_of_interest)  # Drop rows with null values only in the specified columns
 
         # Define the month order
