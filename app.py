@@ -208,7 +208,8 @@ if uploaded_files:
                     }
                     
                     # Append the total row to the DataFrame
-                    summary_df_all_months = summary_df_all_months.append(total_row, ignore_index=True)
+                    # summary_df_all_months = summary_df_all_months.append(total_row, ignore_index=True)
+                    summary_df_all_months = pd.concat([summary_df_all_months, pd.DataFrame([total_row])], ignore_index=True)
                     
                     # Optional: Format the numeric columns back to strings with appropriate formatting
                     summary_df_all_months['Total Number of Trucks'] = summary_df_all_months['Total Number of Trucks'].apply(lambda x: f'{x:.0f}')
