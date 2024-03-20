@@ -196,6 +196,33 @@ if uploaded_files:
 
                 # Display summary table for all months for the current shovel
                 if summary_data_all_months:
+                    # Convert numeric columns to appropriate types for summing
+                    summary_df_all_months['Total Number of Trucks'] = summary_df_all_months['Total Number of Trucks'].astype(float)
+                    summary_df_all_months['Actual Material (Tonnes)'] = summary_df_all_months['Actual Material (Tonnes)'].str.replace('e', 'E').astype(float)
+                    summary_df_all_months['Desired Material (Tonnes)'] = summary_df_all_months['Desired Material (Tonnes)'].str.replace('e', 'E').astype(float)
+                    summary_df_all_months['Tonnage Increase'] = summary_df_all_months['Tonnage Increase'].str.replace('e', 'E').astype(float)
+                    summary_df_all_months['Productivity Increase (%)'] = summary_df_all_months['Productivity Increase (%)'].str.rstrip('%').astype(float)
+                    
+                    # Calculate the sum for each numeric column
+                    total_row = {
+                        'Month': 'Total',
+                        'Total Number of Trucks': summary_df_all_months['Total Number of Trucks'].sum(),
+                        'Actual Material (Tonnes)': summary_df_all_months['Actual Material (Tonnes)'].sum(),
+                        'Desired Material (Tonnes)': summary_df_all_months['Desired Material (Tonnes)'].sum(),
+                        'Tonnage Increase': summary_df_all_months['Tonnage Increase'].sum(),
+                        'Productivity Increase (%)': summary_df_all_months['Productivity Increase (%)'].mean()  # Assuming you want the average percentage increase
+                    }
+                    
+                    # Append the total row to the DataFrame
+                    summary_df_all_months = summary_df_all_months.append(total_row, ignore_index=True)
+                    
+                    # Optional: Format the numeric columns back to strings with appropriate formatting
+                    summary_df_all_months['Total Number of Trucks'] = summary_df_all_months['Total Number of Trucks'].apply(lambda x: f'{x:.0f}')
+                    summary_df_all_months['Actual Material (Tonnes)'] = summary_df_all_months['Actual Material (Tonnes)'].apply(lambda x: f'{x:.2e}')
+                    summary_df_all_months['Desired Material (Tonnes)'] = summary_df_all_months['Desired Material (Tonnes)'].apply(lambda x: f'{x:.2e}')
+                    summary_df_all_months['Tonnage Increase'] = summary_df_all_months['Tonnage Increase'].apply(lambda x: f'{x:.2e}')
+                    summary_df_all_months['Productivity Increase (%)'] = summary_df_all_months['Productivity Increase (%)'].apply(lambda x: f'{x:.2f}%')
+
                     st.write(f"Summary for Shovel: {shovel}")
                     summary_df_all_months = pd.DataFrame(summary_data_all_months)
                     st.table(summary_df_all_months.style.set_table_styles([
