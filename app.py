@@ -170,6 +170,7 @@ if uploaded_files:
         for shovel in shovels_of_interest:
             summary_data_all_months = []  # Initialize summary data for all months
             shovel_data = df[df['shovel']==shovel]
+            shovel_data = shovel_data.dropna()
             if not shovel_data.empty:
                 generate_plot(shovel_data, shovel, target_std_dev=target_std_dev, mean_fill=mean_fill)
                 for month in shovel_data['Month'].unique():
