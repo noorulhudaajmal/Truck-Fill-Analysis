@@ -196,6 +196,7 @@ if uploaded_files:
 
                 # Display summary table for all months for the current shovel
                 if summary_data_all_months:
+                    summary_df_all_months = pd.DataFrame(summary_data_all_months)
                     # Calculate the sum for each numeric column
                     total_row = {
                         'Month': 'Total',
@@ -217,7 +218,6 @@ if uploaded_files:
                     summary_df_all_months['Productivity Increase (%)'] = summary_df_all_months['Productivity Increase (%)'].apply(lambda x: f'{x:.2f}%')
 
                     st.write(f"Summary for Shovel: {shovel}")
-                    summary_df_all_months = pd.DataFrame(summary_data_all_months)
                     st.table(summary_df_all_months.style.set_table_styles([
                         {'selector': 'th',
                             'props': [('background-color', '#0077b6'),
