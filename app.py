@@ -62,7 +62,7 @@ def generate_plot(df, shovel_of_interest, target_std_dev=5, mean_fill=100):
     df['Truck fill'] = calculate_truck_fill(df['VIMS_tonnage'], df['truck_factor_tonnage'])
     
     actual_data = df['Truck fill']
-    month_of_interest = f'{df['Month'].iloc[0]}-{df['Month'].iloc[-1]}'
+    month_of_interest = f'{df["Month"].iloc[0]}-{df["Month"].iloc[-1]}'
     
     x_range = np.linspace(min(actual_data), max(actual_data), 200)
     actual_distribution_y = norm.pdf(x_range, np.mean(actual_data), np.std(actual_data))
