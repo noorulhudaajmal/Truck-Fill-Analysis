@@ -193,7 +193,7 @@ if uploaded_files:
                             'Actual Material (Tonnes)': actual_material,
                             'Desired Material (Tonnes)': desired_material,
                             'Tonnage Increase': max(0, tonnage_increase),
-                            'Productivity Increase (%)': productivity_difference
+                            'Productivity Increase (%)': productivity_difference*100
                         })
 
                 # Display summary table for all months for the current shovel
