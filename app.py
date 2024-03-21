@@ -194,7 +194,7 @@ if uploaded_files:
                         'Actual Material (Tonnes)': summary_df_all_months['Actual Material (Tonnes)'].sum(),
                         'Desired Material (Tonnes)': summary_df_all_months['Desired Material (Tonnes)'].sum(),
                         'Tonnage Increase': summary_df_all_months['Tonnage Increase'].sum(),
-                        'Productivity Increase (%)': summary_df_all_months['Productivity Increase (%)'].sum() 
+                        'Productivity Increase (%)': summary_df_all_months['Productivity Increase (%)'].mean() 
                     }
                     
                     # Append the total row to the DataFrame
