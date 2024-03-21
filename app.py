@@ -63,29 +63,33 @@ def filter_data_based_on_user_selection(df):
                                           placeholder="All Materials")
     dump = filters_row[1].multiselect(label="Select Dump", options=df['Dump'].unique(), placeholder="All")
     shift = filters_row[2].multiselect(label="Choose shift", options=['7am-7pm', '7pm-7am'], placeholder="24/7")
+
+    all_shovels = sorted(df['shovel'].unique())
+    shovel = st.sidebar.selectbox("Select Shovel:", all_shovels)
+
     if not material:
         material = df['Material'].unique()
     if not dump:
         dump = df['Dump'].unique()
-    df = filter_data(df, material, dump, shift)
+    df = filter_data(df, material, dump, shovel, shift)
     return df
 
 
 # Function to generate plots and summary tables
 def generate_plots_and_summaries(df, mean_fill, target_std_dev):
-    shovels_of_interest = ["EX201", "EX202", "EX203", "EX204", "EX208"]
-    for shovel in shovels_of_interest:
-        shovel_data = df[df['shovel'] == shovel]
-        if not shovel_data.empty:
-            fig = generate_plot(shovel_data, shovel, target_std_dev=target_std_dev, mean_fill=mean_fill)
-            st.plotly_chart(fig, use_container_width=True)
-            summary_df_all_months = generate_summary_data(shovel_data, shovel, mean_fill)
-            if not summary_df_all_months.empty:
-                display_summary_table(summary_df_all_months, shovel)
+    if not df.empty:
+        fig = generate_plot(df, target_std_dev=target_std_dev, mean_fill=mean_fill)
+        st.plotly_chart(fig, use_container_width=True)
+        summary_df_all_months = generate_summary_data(df, mean_fill)
+        if not summary_df_all_months.empty:
+            shovel_name = df['shovel'].iloc[0]
+            display_summary_table(summary_df_all_months, shovel_name)
+    else:
+        st.info("No data available")
 
 
 # Function to generate summary data for all months for a specific shovel
-def generate_summary_data(shovel_data, shovel, mean_fill):
+def generate_summary_data(shovel_data, mean_fill):
     summary_data_all_months = []
     for month in shovel_data['Month'].unique():
         filtered_df = shovel_data[shovel_data['Month'] == month]
@@ -133,16 +137,16 @@ def append_total_row(summary_df_all_months):
 
 
 # Function to display the summary table for a specific shovel
-def display_summary_table(summary_df_all_months, shovel):
+def display_summary_table(summary_df, shovel):
     st.write(f"Summary for Shovel: {shovel}")
     # Format the numeric columns back to strings with appropriate formatting
-    summary_df_all_months['Total Number of Trucks'] = summary_df_all_months['Total Number of Trucks'].apply(lambda x: f'{x:.0f}')
-    summary_df_all_months['Actual Material (Tonnes)'] = summary_df_all_months['Actual Material (Tonnes)'].apply(lambda x: f'{x:.2e}')
-    summary_df_all_months['Desired Material (Tonnes)'] = summary_df_all_months['Desired Material (Tonnes)'].apply(lambda x: f'{x:.2e}')
-    summary_df_all_months['Tonnage Increase'] = summary_df_all_months['Tonnage Increase'].apply(lambda x: f'{x:.2e}')
-    summary_df_all_months['Productivity Increase (%)'] = summary_df_all_months['Productivity Increase (%)'].apply(lambda x: f'{x:.2f}%')
+    summary_df['Total Number of Trucks'] = summary_df['Total Number of Trucks'].apply(lambda x: f'{x:.0f}')
+    summary_df['Actual Material (Tonnes)'] = summary_df['Actual Material (Tonnes)'].apply(lambda x: f'{x:.2e}')
+    summary_df['Desired Material (Tonnes)'] = summary_df['Desired Material (Tonnes)'].apply(lambda x: f'{x:.2e}')
+    summary_df['Tonnage Increase'] = summary_df['Tonnage Increase'].apply(lambda x: f'{x:.2e}')
+    summary_df['Productivity Increase (%)'] = summary_df['Productivity Increase (%)'].apply(lambda x: f'{x:.2f}%')
 
-    st.table(summary_df_all_months.style.set_table_styles([
+    st.table(summary_df.style.set_table_styles([
         {'selector': 'th', 'props': [('background-color', '#0077b6'), ('color', 'white'), ('text-align', 'center'),
                                      ('font-weight', 'bold'), ('font-size', '14px'), ('padding', '10px')]},
         {'selector': 'td', 'props': [('text-align', 'center'), ('font-size', '14px'), ('padding', '8px')]},
@@ -153,7 +157,7 @@ def display_summary_table(summary_df_all_months, shovel):
 
 # Main function to run the Streamlit app
 def main():
-    st.title("Truck Fill Analysis")
+    st.title("PLM Truck Fill Analysis")
     uploaded_files, mean_fill, target_std_dev = upload_files_and_set_params()
     if uploaded_files:
         dfs = process_uploaded_files(uploaded_files)

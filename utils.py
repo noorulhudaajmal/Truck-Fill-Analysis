@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
@@ -39,9 +41,9 @@ def preprocessdata(df):
     df['Month'] = df['time_full'].dt.month_name()
     df['Month Order'] = df['time_full'].dt.month
 
-    # Drop 'Truck fill' column if it exists
-    if 'Truck fill' in df.columns:
-        df = df.drop(columns=['Truck fill'])
+    # Drop 'Truck fill' column if it exists in any case variation
+    truck_fill_columns = [col for col in df.columns if re.match(r'^truck\s*fill$', col, re.IGNORECASE)]
+    df.drop(columns=truck_fill_columns, inplace=True, errors='ignore')
 
     # Calculate 'Truck fill' based on 'VIMS_tonnage' and 'truck_factor_tonnage'
     df['Truck fill'] = calculate_truck_fill(df['VIMS_tonnage'], df['truck_factor_tonnage'])
@@ -49,9 +51,10 @@ def preprocessdata(df):
     return df
 
 
-def filter_data(df, material, dump, shift):
+def filter_data(df, material, dump, shovel, shift):
     # Filter by material and dump
     df = df[df['Material'].isin(material) & df['Dump'].isin(dump)]
+    df = df[df['shovel'] == shovel]
 
     # Define time ranges for shifts
     shift_ranges = {
@@ -70,14 +73,14 @@ def filter_data(df, material, dump, shift):
     return df
 
 
-def generate_plot(df, shovel_of_interest, target_std_dev=5, mean_fill=100):
+def generate_plot(df, target_std_dev=5, mean_fill=100):
+    shovel_of_interest = df['shovel'].iloc[0]
     actual_data = df['Truck fill']
     (x_range, actual_distribution_y, desired_distribution_y, actual_productivity,
      desired_productivity, productivity_difference) = get_dist_data(actual_data, mean_fill, target_std_dev)
     month_of_interest = f'{df["Month"].iloc[0]}-{df["Month"].iloc[-1]}'
 
     fig = go.Figure()
-
     fig.add_trace(go.Scatter(x=x_range,
                              y=actual_distribution_y,
                              mode='lines',
