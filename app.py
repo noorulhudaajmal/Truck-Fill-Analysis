@@ -10,10 +10,13 @@ st.set_page_config(page_title="Truck Fill Analysis", page_icon="📊", layout="w
 st.markdown("""
         <style>
                .block-container {
-                    padding-top: 1rem;
+                    padding-top: 0.5rem;
                     padding-bottom: 0rem;
                     padding-left: 5rem;
                     padding-right: 5rem;
+                }
+               [data-testid=stSidebarUserContent] {
+                    padding-top: 4rem;
                 }
         </style>
         """, unsafe_allow_html=True)
@@ -58,11 +61,11 @@ def preprocess_and_filter_data(dfs, mean_fill):
 
 # Function to filter data based on user selection
 def filter_data_based_on_user_selection(df):
-    filters_row = st.columns((2, 2, 1))
-    material = filters_row[0].multiselect(label="Select material", options=df['Material'].unique(),
-                                          placeholder="All Materials")
-    dump = filters_row[1].multiselect(label="Select Dump", options=df['Dump'].unique(), placeholder="All")
-    shift = filters_row[2].multiselect(label="Choose shift", options=['7am-7pm', '7pm-7am'], placeholder="All")
+    # filters_row = st.columns((2, 2, 1))
+    material = st.sidebar.multiselect(label="Select material", options=df['Material'].unique(),
+                                          placeholder="All")
+    dump = st.sidebar.multiselect(label="Select Dump", options=df['Dump'].unique(), placeholder="All")
+    shift = st.sidebar.multiselect(label="Choose shift", options=['7am-7pm', '7pm-7am'], placeholder="All")
 
     all_shovels = sorted(df['shovel'].unique())
     shovel = st.sidebar.selectbox("Select Shovel:", all_shovels)

@@ -61,14 +61,14 @@ def filter_data(df, material, dump, shovel, shift):
         '7am-7pm': ('07:00', '19:00'),
         '7pm-7am': ('19:00', '07:00')
     }
-
-    # Filter by shift
-    if '7am-7pm' in shift:
-        df = df[(df['time_full'].dt.time >= pd.to_datetime(shift_ranges['7am-7pm'][0]).time()) &
-                (df['time_full'].dt.time < pd.to_datetime(shift_ranges['7am-7pm'][1]).time())]
-    if '7pm-7am' in shift:
-        df = df[(df['time_full'].dt.time >= pd.to_datetime(shift_ranges['7pm-7am'][0]).time()) |
-                (df['time_full'].dt.time < pd.to_datetime(shift_ranges['7pm-7am'][1]).time())]
+    if len(shift) == 1:
+        # Filter by shift
+        if '7am-7pm' in shift:
+            df = df[(df['time_full'].dt.time >= pd.to_datetime(shift_ranges['7am-7pm'][0]).time()) &
+                    (df['time_full'].dt.time < pd.to_datetime(shift_ranges['7am-7pm'][1]).time())]
+        if '7pm-7am' in shift:
+            df = df[(df['time_full'].dt.time >= pd.to_datetime(shift_ranges['7pm-7am'][0]).time()) |
+                    (df['time_full'].dt.time < pd.to_datetime(shift_ranges['7pm-7am'][1]).time())]
 
     return df
 
@@ -92,7 +92,7 @@ def generate_plot(df, target_std_dev=5, mean_fill=100):
                              name='Desired Distribution',
                              line=dict(color='#00B7F1')))
 
-    fig.add_trace(go.Scatter(x=[np.mean(actual_data),np.mean(actual_data)],
+    fig.add_trace(go.Scatter(x=[np.mean(actual_data), np.mean(actual_data)],
                              y=[0, max(actual_distribution_y)],
                              mode='lines',
                              name='Actual Mean',
