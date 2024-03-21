@@ -62,7 +62,7 @@ def filter_data_based_on_user_selection(df):
     material = filters_row[0].multiselect(label="Select material", options=df['Material'].unique(),
                                           placeholder="All Materials")
     dump = filters_row[1].multiselect(label="Select Dump", options=df['Dump'].unique(), placeholder="All")
-    shift = filters_row[2].multiselect(label="Choose shift", options=['7am-7pm', '7pm-7am'], placeholder="24/7")
+    shift = filters_row[2].multiselect(label="Choose shift", options=['7am-7pm', '7pm-7am'], placeholder="All")
 
     all_shovels = sorted(df['shovel'].unique())
     shovel = st.sidebar.selectbox("Select Shovel:", all_shovels)
@@ -71,6 +71,8 @@ def filter_data_based_on_user_selection(df):
         material = df['Material'].unique()
     if not dump:
         dump = df['Dump'].unique()
+    if not shift:
+        shift = ['7am-7pm', '7pm-7am']
     df = filter_data(df, material, dump, shovel, shift)
     return df
 
