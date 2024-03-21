@@ -62,21 +62,24 @@ def preprocess_and_filter_data(dfs, mean_fill):
 # Function to filter data based on user selection
 def filter_data_based_on_user_selection(df):
     # filters_row = st.columns((2, 2, 1))
-    material = st.sidebar.multiselect(label="Select material", options=df['Material'].unique(),
-                                          placeholder="All")
-    dump = st.sidebar.multiselect(label="Select Dump", options=df['Dump'].unique(), placeholder="All")
-    shift = st.sidebar.multiselect(label="Choose shift", options=['7am-7pm', '7pm-7am'], placeholder="All")
-
     all_shovels = sorted(df['shovel'].unique())
     shovel = st.sidebar.selectbox("Select Shovel:", all_shovels)
 
-    if not material:
+    avb_materials = list(df['Material'].unique()) + ["All"]
+    material = st.sidebar.multiselect(label="Select material", options=avb_materials, default="All", placeholder="All")
+    avb_dump = list(df['Dump'].unique()) + ["All"]
+    dump = st.sidebar.multiselect(label="Select Dump", options=avb_dump, default="All", placeholder="All")
+    all_shifts = ['7am-7pm', '7pm-7am', 'All']
+    shift = st.sidebar.multiselect(label="Choose shift", options=all_shifts, default="All", placeholder="All")
+
+    if (not material) or (material == ["All"]) or ("All" in material):
         material = df['Material'].unique()
-    if not dump:
+    if (not dump) or (dump == ["All"]) or ("All" in dump):
         dump = df['Dump'].unique()
-    if not shift:
+    if (not shift) or (shift == ["All"]) or ("All" in shift):
         shift = ['7am-7pm', '7pm-7am']
     df = filter_data(df, material, dump, shovel, shift)
+
     return df
 
 
