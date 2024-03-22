@@ -129,7 +129,7 @@ def generate_plot(df, target_std_dev=5, mean_fill=100):
         title=f'Actual vs Desired Truck Fill Distribution ({shovel_of_interest} - {month_of_interest})',
         xaxis_title='Truck Fill %',
         yaxis_title='Probability Density',
-        xaxis=dict(range=[50, 150], dtick=10),
+        xaxis=dict(range=[70, 140], dtick=10),
         yaxis=dict(range=[0, max(max(actual_distribution_y), max(desired_distribution_y)) * 1.2]),
         legend_title='Legend',
         legend=dict(x=1, y=1, bgcolor='rgba(255,255,255,0.5)'),
